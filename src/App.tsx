@@ -8,13 +8,14 @@ function App() {
   const[blur, setBlur] = useState(50)
   const[guess, setGuess] = useState('')
   const[showVignette, setShowVignette] = useState(false)
+  const[win, setWin] = useState(false)
 
   const vignetteSize = 70 - (50 - blur*2) / 2
   const vignetteOpacity = .5 + (50 - blur*2) / 100
   
   const BLURREDUCTION = 10
 
-  const ALERTFADEDURATION = 1000
+  const ALERTFADEDURATION = 2000
 
   const handleGuess = async () => { //Handles logic for inputted guesses
     toast.dismissAll() //Dismisses any existing toasts before showing a new one
@@ -26,6 +27,9 @@ function App() {
     if (guess.trim().toLowerCase() === 'feedbacker') { //If user guesses correctly, show a success message and end the game
       toast.success('Correct! The album is "Feedbacker" by Boris.')
       setBlur(0)
+      setShowVignette(false)
+      setWin(true)
+      return
     } else { //If the guess is incorrect, handles game logic
       if (blur - BLURREDUCTION < 0) { //If the user has run out of attempts, show a game over message and end the game
         toast.error('Game over! You have run out of attempts.')
@@ -69,12 +73,12 @@ function App() {
           value={guess} 
           onChange={(e) => setGuess(e.target.value)} 
           onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
-          disabled={blur<0}
+          disabled={blur<0 || win}
           type="text" placeholder="Enter your guess..." 
           className="guess-input" />
 
         <button 
-          disabled={blur<0}
+          disabled={blur<0 || win}
           className="guess-button" 
           onClick={handleGuess}>Guess
         </button>
