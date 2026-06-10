@@ -68,12 +68,24 @@ function App() {
         />  
       </div>
 
-      <div className="guess-boxes" />
-      <div className="guess-boxes" />
-      <div className="guess-boxes" />
-      <div className="guess-boxes" />
-      <div className="guess-boxes" />
-      <div className="guess-boxes" />
+      <div 
+        className="guess-boxes" 
+        id="box1"/>
+      <div 
+        className="guess-boxes" 
+        id="box2"/>
+      <div 
+        className="guess-boxes" 
+        id="box3"/>
+      <div 
+        className="guess-boxes" 
+        id="box4"/>
+      <div 
+        className="guess-boxes"
+        id="box5"/>
+      <div 
+        className="guess-boxes" 
+        id="box6"/>
 
       <div className="guess-container">
         <input 

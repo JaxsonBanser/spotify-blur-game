@@ -9,7 +9,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 80px;
+  margin-top: 60px;
 }
 
 .guess-boxes {
@@ -20,7 +20,7 @@ h1 {
   align-items: center;
   height: 40px;
   width: 40px;
-  top: 80px;
+  top: 60px;
   background-color: rgba(111, 111, 112, 0.151);
 }
 
