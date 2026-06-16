@@ -11,6 +11,7 @@ function App() {
 
   const[finish, setFinish] = useState(false)
   const[attempts, setAttempts] = useState(0)
+  const[boxStates, setBoxStates] = useState<('empty' | 'wrong' | 'correct')[]>(Array(6).fill('empty'))
 
   const revealProgress = 50 - blur*2
   const vignetteSize = 70 - (revealProgress) / 2
@@ -21,13 +22,15 @@ function App() {
   const ALERTFADEDURATION = 3000
 
   //Marks off a box with an X upon an incorrect guess 
-  const boxX = (boxNum: number) => {
-
+  const boxFail = (boxNum: number) => {
+    setBoxStates((prev) => 
+      prev.map((value, index) => (index === boxNum ? 'wrong' : value)))
   }
 
   //Marks off a box with a check upon a correct guess 
-  const boxCheck = (boxNum: number) => {
-
+  const boxSucc = (boxNum: number) => {
+    setBoxStates((prev) => 
+      prev.map((value, index) => (index === boxNum ? 'correct' : value)))
   }
 
   const handleGuess = () => { //Handles logic for inputted guesses
@@ -45,9 +48,7 @@ function App() {
       setShowVignette(false)
 
       //Win box conditions
-      const next = attempts + 1
-      setAttempts(next)
-      boxCheck(next)
+      boxSucc(attempts)
       setFinish(true)
       return
     } else { //If the guess is incorrect, handles game logic
@@ -58,16 +59,15 @@ function App() {
         setBlur(-100)
 
         //Loss box conditions
-        const next = attempts + 1
-        boxX(next)
+        boxFail(attempts)
+        setAttempts(attempts + 1)
         setFinish(true)
       } else { //If the user still has attempts left, show an error message and reduce the blur
         toast.error('Incorrect guess. Try again!')
 
         //Attempt box conditions
-        const next = attempts + 1
-        setAttempts(next)
-        boxX(next)
+        boxFail(attempts)
+        setAttempts(attempts + 1)
 
         //Attempt blur conditions
         setBlur(blur - BLURREDUCTION)
@@ -102,27 +102,9 @@ function App() {
         />  
       </div>
 
-      <div 
-        className="guess-boxes" 
-        id="box1"/>
-        <img
-          
-        />
-      <div 
-        className="guess-boxes" 
-        id="box2"/>
-      <div 
-        className="guess-boxes" 
-        id="box3"/>
-      <div 
-        className="guess-boxes" 
-        id="box4"/>
-      <div 
-        className="guess-boxes"
-        id="box5"/>
-      <div 
-        className="guess-boxes" 
-        id="box6"/>
+      {boxStates.map((state, index) => (
+        <div key={index} className={`guess-boxes ${state}`} />
+      ))}
 
       <div className="guess-container">
         <input 
