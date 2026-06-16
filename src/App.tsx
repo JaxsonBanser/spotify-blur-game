@@ -9,8 +9,7 @@ function App() {
   const[showVignette, setShowVignette] = useState(false)
   const[guess, setGuess] = useState('')
 
-  const[lose, setLose] = useState(false)
-  const[win, setWin] = useState(false)
+  const[finish, setFinish] = useState(false)
   const[attempts, setAttempts] = useState(0)
 
   const revealProgress = 50 - blur*2
@@ -21,10 +20,12 @@ function App() {
 
   const ALERTFADEDURATION = 3000
 
+  //Marks off a box with an X upon an incorrect guess 
   const boxX = (boxNum: number) => {
 
   }
 
+  //Marks off a box with a check upon a correct guess 
   const boxCheck = (boxNum: number) => {
 
   }
@@ -38,18 +39,37 @@ function App() {
 
     if (guess.trim().toLowerCase() === 'feedbacker') { //If user guesses correctly, show a success message and end the game
       toast.success('Correct! The album is "Feedbacker" by Boris.')
+
+      //Win blur conditions
       setBlur(0)
       setShowVignette(false)
-      setWin(true)
-      boxCheck(attempts)
+
+      //Win box conditions
+      const next = attempts + 1
+      setAttempts(next)
+      boxCheck(next)
+      setFinish(true)
       return
     } else { //If the guess is incorrect, handles game logic
       if (blur - BLURREDUCTION < 0) { //If the user has run out of attempts, show a game over message and end the game
         toast.error('You have run out of attempts. The album was "Feedbacker" by Boris')
+
+        //Loss blur conditions
         setBlur(-100)
-        setLose(true)
+
+        //Loss box conditions
+        const next = attempts + 1
+        boxX(next)
+        setFinish(true)
       } else { //If the user still has attempts left, show an error message and reduce the blur
         toast.error('Incorrect guess. Try again!')
+
+        //Attempt box conditions
+        const next = attempts + 1
+        setAttempts(next)
+        boxX(next)
+
+        //Attempt blur conditions
         setBlur(blur - BLURREDUCTION)
       }
     }
@@ -85,6 +105,9 @@ function App() {
       <div 
         className="guess-boxes" 
         id="box1"/>
+        <img
+          
+        />
       <div 
         className="guess-boxes" 
         id="box2"/>
@@ -106,13 +129,14 @@ function App() {
           value={guess} 
           onChange={(e) => setGuess(e.target.value)} 
           onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
-          disabled={lose || win}
+          
+          disabled={finish}
           type="text" placeholder="Enter your guess..." 
           className="guess-input" />
 
-        <button 
-          disabled={lose || win}
-          className="guess-button" 
+        <button
+          disabled={finish} 
+          className="guess-button"
           onClick={handleGuess}>Guess
         </button>
       </div>
