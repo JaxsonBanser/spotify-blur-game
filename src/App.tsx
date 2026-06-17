@@ -5,21 +5,49 @@ import './App.css'
 
 function App() {
 
-  const[blur, setBlur] = useState(50)
-  const[showVignette, setShowVignette] = useState(false)
+  //Used to hold the user's guess 
   const[guess, setGuess] = useState('')
 
+  //Used for game control
   const[finish, setFinish] = useState(false)
+  const[nextButton, setNextButton] = useState(false)
+
+  //Used for counting attempts made and updating blur, guess boxes, and vignette based on that. UI Design components 
   const[attempts, setAttempts] = useState(0)
   const[boxStates, setBoxStates] = useState<('empty' | 'wrong' | 'correct')[]>(Array(6).fill('empty'))
+  const[blur, setBlur] = useState(70)
+  const[showVignette, setShowVignette] = useState(false)
 
   const revealProgress = 50 - blur*2
   const vignetteSize = 70 - (revealProgress) / 2
   const vignetteOpacity = .5 + (revealProgress) / 100
-  
-  const BLURREDUCTION = 10
 
+  const BLURREDUCTION = 14
   const ALERTFADEDURATION = 3000
+
+  //Hard coded list of albums 
+  const album = [
+    {
+      name: 'Feedbacker',
+      artist: 'Boris',
+      image: '/Feedbacker.jpg'
+    },
+
+    {
+      name: 'Nevermind',
+      artist: 'Nirvana',
+      image: '/Nevermind.jpg'
+    },
+
+    {
+      name: 'Ege Bamyasi',
+      artist: 'CAN',
+      image: '/EgeBamyasi.jpg'
+    }
+  ]
+
+  //Used for randomly picking through the list of albums
+  const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * album.length))
 
   //Marks off a box with an X upon an incorrect guess 
   const boxFail = (boxNum: number) => {
@@ -34,14 +62,15 @@ function App() {
   }
 
   const handleGuess = () => { //Handles logic for inputted guesses
+
     toast.dismissAll() //Dismisses any existing toasts before showing a new one
     if (guess.trim().toLowerCase() === '') { //If the user enters a blank guess, print an error message but do not reduce the blur
       toast.error('Please enter a guess before submitting.')
       return
     }
 
-    if (guess.trim().toLowerCase() === 'feedbacker') { //If user guesses correctly, show a success message and end the game
-      toast.success('Correct! The album is "Feedbacker" by Boris.')
+    if (guess.trim().toLowerCase() === album[albumNum].name.toLowerCase()) { //If user guesses correctly, show a success message and end the game
+      toast.success('Correct! The album is "' + album[albumNum].name + '" by ' + album[albumNum].artist + '.')
 
       //Win blur conditions
       setBlur(0)
@@ -53,7 +82,7 @@ function App() {
       return
     } else { //If the guess is incorrect, handles game logic
       if (blur - BLURREDUCTION < 0) { //If the user has run out of attempts, show a game over message and end the game
-        toast.error('You have run out of attempts. The album was "Feedbacker" by Boris')
+        toast.error('You have run out of attempts. The album was "' + album[albumNum].name + '" by ' + album[albumNum].artist + '.')
 
         //Loss blur conditions
         setBlur(-100)
@@ -80,6 +109,10 @@ function App() {
   return (
     <div> 
 
+      {nextButton && (<div 
+        
+        />)}
+
       {showVignette && (<div 
         className="screen-overlay"
         style = {{background: `radial-gradient(ellipse 60% 60% at 50% 31%, transparent ${vignetteSize}%, rgba(0, 0, 0, ${vignetteOpacity}) 100%)`}}
@@ -95,7 +128,7 @@ function App() {
 
       <div className="album-container">
         <img 
-          src="/FeedbackerImg.jpg"
+          src={album[albumNum].image}
           alt="Album Cover"
           className="album-cover"
           style={{ filter: `blur(${blur}px)` }}
