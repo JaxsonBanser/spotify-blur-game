@@ -92,7 +92,7 @@ function App() {
         setAttempts(attempts + 1)
         setFinish(true)
       } else { //If the user still has attempts left, show an error message and reduce the blur
-        toast.error('Incorrect guess. Try again!')
+        //toast.error('Incorrect guess. Try again!')
 
         //Attempt box conditions
         boxFail(attempts)

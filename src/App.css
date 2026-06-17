@@ -1,3 +1,7 @@
+:root{
+  --fade-duration: 0.15s
+}
+
 h1 {
   text-align: center;
   font-size: 5rem;
@@ -20,16 +24,20 @@ h1 {
   height: 2em;
   width: 2em;
   top: 3.5em;
-  border-radius: 5em;
+  border-radius: .25em;
   background-color: rgba(112, 111, 111, 0.151);
 }
 
+
 .guess-boxes.wrong {
+  transition: background-color var(--fade-duration) ease-in;
   background-color: rgba(255, 0, 0, 0.785)
+
 }
 
 .guess-boxes.correct {
-  background-color: rgba(77, 255, 7, 0.511)
+  transition: background-color var(--fade-duration) ease-in;
+  background-color: rgba(77, 255, 7, 0.703)
 }
 
 .album-container {
