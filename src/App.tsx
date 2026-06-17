@@ -13,6 +13,9 @@ function App() {
   const[nextButton, setNextButton] = useState(false)
 
   //Used for counting attempts made and updating blur, guess boxes, and vignette based on that. UI Design components 
+  const BLURREDUCTION = 14
+  const ALERTFADEDURATION = 3000
+
   const[attempts, setAttempts] = useState(0)
   const[boxStates, setBoxStates] = useState<('empty' | 'wrong' | 'correct')[]>(Array(6).fill('empty'))
   const[blur, setBlur] = useState(70)
@@ -21,9 +24,6 @@ function App() {
   const revealProgress = 50 - blur*2
   const vignetteSize = 70 - (revealProgress) / 2
   const vignetteOpacity = .5 + (revealProgress) / 100
-
-  const BLURREDUCTION = 14
-  const ALERTFADEDURATION = 3000
 
   //Hard coded list of albums 
   const album = [
@@ -43,6 +43,36 @@ function App() {
       name: 'Ege Bamyasi',
       artist: 'CAN',
       image: '/EgeBamyasi.jpg'
+    },
+    {
+      name: 'To Pimp A Butterfly',
+      artist: 'Kendrick Lamar',
+      image: '/TPAB.jpg'
+    },
+    {
+      name: 'In Rainbows',
+      artist: 'Radiohead',
+      image: '/InRainbows.jpg'
+    },
+    {
+      name: "In the Court of the Crimson King",
+      artist: 'King Crimson',
+      image: '/InTheCourt.jpg'
+    },
+    {
+      name: 'The Dark Side of the Moon',
+      artist: 'Pink Floyd',
+      image: '/DarkSide.jpg'
+    },
+    {
+      name: 'Abbey Road',
+      artist: 'The Beatles',
+      image: '/AbbeyRoad.jpg'
+    },
+    {
+      name: 'OK Computer',
+      artist: 'Radiohead',
+      image: '/OkComputer.jpg'
     }
   ]
 
@@ -109,11 +139,7 @@ function App() {
   return (
     <div> 
 
-      {nextButton && (<div 
-        
-        />)}
-
-      {showVignette && (<div 
+      {showVignette && (<div //Used for applying the vignette overlay 
         className="screen-overlay"
         style = {{background: `radial-gradient(ellipse 60% 60% at 50% 31%, transparent ${vignetteSize}%, rgba(0, 0, 0, ${vignetteOpacity}) 100%)`}}
         />
@@ -121,38 +147,47 @@ function App() {
 
       <h1>UNTITLED</h1>
 
-      <Toaster 
+      <Toaster //Used for win and lose popups 
         position="bottom-center"
         toastOptions={{ duration: ALERTFADEDURATION }}
        />
 
       <div className="album-container">
-        <img 
+        <img //Used for holding the album cover image and applies the blur effect 
           src={album[albumNum].image}
           alt="Album Cover"
           className="album-cover"
           style={{ filter: `blur(${blur}px)` }}
         />  
       </div>
-
+        
       {boxStates.map((state, index) => (
+        //Used for mapping the guess box states
         <div key={index} className={`guess-boxes ${state}`} />
       ))}
-
+      
       <div className="guess-container">
-        <input 
+        <input //Used for entering in your album guess 
           value={guess} 
           onChange={(e) => setGuess(e.target.value)} 
           onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
+          
+          autoFocus
           
           disabled={finish}
           type="text" placeholder="Enter your guess..." 
           className="guess-input" />
 
-        <button
+        <button //Used for submitting a guess
           disabled={finish} 
           className="guess-button"
           onClick={handleGuess}>Guess
+        </button>
+
+        <button //Used for continuing to the next album cover
+          >
+          
+          asdfaa
         </button>
       </div>
 

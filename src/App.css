@@ -9,49 +9,44 @@ h1 {
   font-family: 'Segoe UI', calibri, 'Helvetica Neue', sans-serif;
 }
 
+/* Used for the guess button and input */
 .guess-container {
   display: relative;
-  justify-content: center;
-  align-items: center;
   margin-top: 3em;
 }
 
+/* Used for the guess boxes and making them red or green depending on the guess */
 .guess-boxes {
   position: relative;
   display: inline-block;
   margin: 0.5em;
-  align-items: center;
   height: 2em;
   width: 2em;
   top: 3.5em;
   border-radius: .25em;
   background-color: rgba(112, 111, 111, 0.151);
 }
-
-
 .guess-boxes.wrong {
   transition: background-color var(--fade-duration) ease-in;
   background-color: rgba(255, 0, 0, 0.785)
 
 }
-
 .guess-boxes.correct {
   transition: background-color var(--fade-duration) ease-in;
   background-color: rgba(77, 255, 7, 0.703)
 }
 
+/* Used for the album cover and container */
 .album-container {
   display: relative;
-  justify-content: center;
-  align-items: center;
 }
-
 .album-cover {
   width: 18.75em;
   height: 18.75em;
   object-fit: cover;
 }
 
+/* Used for the vignette */
 .screen-overlay {
   position: fixed; 
   inset: 0;
