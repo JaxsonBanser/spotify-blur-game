@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
 import './App.css'
 
 function App() {
 
+  //Used for hilighting the input text box
+  const inputRef = useRef<HTMLInputElement>(null)
+
   //Used to hold the user's guess 
   const[guess, setGuess] = useState('')
 
-  //Used for game control
+  //Used for game end control
   const[finish, setFinish] = useState(false)
-  const[nextButton, setNextButton] = useState(false)
 
   //Used for counting attempts made and updating blur, guess boxes, and vignette based on that. UI Design components 
   const BLURREDUCTION = 14
@@ -99,6 +101,11 @@ function App() {
     setFinish(false)
     setBlur(70)
     setBoxStates(Array(6).fill('empty'))
+
+    setTimeout(() => {
+      inputRef.current!.focus()
+      inputRef.current!.value=""
+    }, 0)
   } 
 
   //Handles logic for inputted guesses
@@ -185,19 +192,22 @@ function App() {
           autoFocus
           
           disabled={finish}
+          ref={inputRef}
           type="text" placeholder="Enter your guess..." 
-          className="guess-input" />
+          className="guess-input"
+          id="guessInput"/>
 
         <button //Used for submitting a guess
+          onClick={handleGuess}
           disabled={finish} 
-          className="guess-button"
-          onClick={handleGuess}>
+          className="guess-button">
             Guess
         </button>
 
         <button //Used for continuing to the next album cover
           onClick={newAlbum}
-          disabled={!finish}>
+          disabled={!finish}
+          id="nextButton">
             Next Album
         </button>
       </div>
