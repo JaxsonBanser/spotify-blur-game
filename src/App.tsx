@@ -27,6 +27,8 @@ function App() {
   const vignetteSize = 70 - (revealProgress) / 2
   const vignetteOpacity = .5 + (revealProgress) / 100
 
+  const usedRef = useRef<number[]>([])
+
   //Hard coded list of albums 
   const album = [
     {
@@ -95,17 +97,28 @@ function App() {
 
   //Switches the album to a new one
   const newAlbum = () => {
-    //Resets all fields 
-    setAlbumNum(Math.floor(Math.random() * album.length))
+    //Picks a new number that isnt already used 
+    if (usedRef.current.length >= album.length) {
+      toast.success("YOU WIN!")
+      usedRef.current = []
+    }
+
+    let candidate: number
+    do {
+      candidate = Math.floor(Math.random() * album.length)
+    } while (usedRef.current.includes(candidate))
+ 
+    usedRef.current.push(candidate)
+    setAlbumNum(candidate)
+
+    //Resets round ui values
     setAttempts(0)
     setFinish(false)
     setBlur(70)
     setBoxStates(Array(6).fill('empty'))
 
-    setTimeout(() => {
-      inputRef.current!.focus()
-      inputRef.current!.value=""
-    }, 0)
+    setGuess('')
+    setTimeout(() => inputRef.current!.focus(), 0)
   } 
 
   //Handles logic for inputted guesses
