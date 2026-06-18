@@ -21,7 +21,7 @@ function App() {
   const[blur, setBlur] = useState(70)
   const[showVignette, setShowVignette] = useState(false)
 
-  const revealProgress = 50 - blur*2
+  const revealProgress = 20 - blur*2
   const vignetteSize = 70 - (revealProgress) / 2
   const vignetteOpacity = .5 + (revealProgress) / 100
 
@@ -91,8 +91,18 @@ function App() {
       prev.map((value, index) => (index === boxNum ? 'correct' : value)))
   }
 
-  const handleGuess = () => { //Handles logic for inputted guesses
+  //Switches the album to a new one
+  const newAlbum = () => {
+    //Resets all fields 
+    setAlbumNum(Math.floor(Math.random() * album.length))
+    setAttempts(0)
+    setFinish(false)
+    setBlur(70)
+    setBoxStates(Array(6).fill('empty'))
+  } 
 
+  //Handles logic for inputted guesses
+  const handleGuess = () => {
     toast.dismissAll() //Dismisses any existing toasts before showing a new one
     if (guess.trim().toLowerCase() === '') { //If the user enters a blank guess, print an error message but do not reduce the blur
       toast.error('Please enter a guess before submitting.')
@@ -111,7 +121,7 @@ function App() {
       setFinish(true)
       return
     } else { //If the guess is incorrect, handles game logic
-      if (blur - BLURREDUCTION < 0) { //If the user has run out of attempts, show a game over message and end the game
+      if (attempts === 5) { //If the user has run out of attempts, show a game over message and end the game
         toast.error('You have run out of attempts. The album was "' + album[albumNum].name + '" by ' + album[albumNum].artist + '.')
 
         //Loss blur conditions
@@ -181,13 +191,14 @@ function App() {
         <button //Used for submitting a guess
           disabled={finish} 
           className="guess-button"
-          onClick={handleGuess}>Guess
+          onClick={handleGuess}>
+            Guess
         </button>
 
         <button //Used for continuing to the next album cover
-          >
-          
-          asdfaa
+          onClick={newAlbum}
+          disabled={!finish}>
+            Next Album
         </button>
       </div>
 
