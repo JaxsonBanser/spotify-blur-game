@@ -42,7 +42,7 @@ export async function exchangeCodeForToken(code: string) {
 
     const body = new URLSearchParams({
         client_id: CLIENT_ID,
-        grant_type: 'authorization-code',
+        grant_type: 'authorization_code',
         code,
         redirect_uri: REDIRECT_URI,
         code_verifier: verifier ?? '',
@@ -57,6 +57,26 @@ export async function exchangeCodeForToken(code: string) {
     const data = await res.json()
     console.log('TOKEN RESPONSE:', data)
 
+    if (!res.ok) {
+        throw new Error(data.error_description || 'Token exchange failed')
+    }
+
     localStorage.setItem('spotify_access_token', data.access_token)
     return data.access_token
+}
+
+export async function getCurrentUser() {
+  const token = localStorage.getItem('spotify_access_token')
+
+  const res = await fetch('https://api.spotify.com/v1/me', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const data = await res.json()
+
+  console.log('CURRENT USER:', data)
+
+  return data
 }
