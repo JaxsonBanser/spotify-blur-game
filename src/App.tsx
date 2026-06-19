@@ -5,8 +5,15 @@ import './App.css'
 
 function App() {
 
+  
+  const CLIENTID = import.meta.env.VITE_SPOTIFY_CLIENT_ID
+  const REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI
+
   //Used for hilighting the input text box
   const inputRef = useRef<HTMLInputElement>(null)
+
+  //Used for keeping track of the index of used albums
+  const usedRef = useRef<number[]>([])
 
   //Used to hold the user's guess 
   const[guess, setGuess] = useState('')
@@ -26,8 +33,6 @@ function App() {
   const revealProgress = 20 - blur*2
   const vignetteSize = 70 - (revealProgress) / 2
   const vignetteOpacity = .5 + (revealProgress) / 100
-
-  const usedRef = useRef<number[]>([])
 
   //Hard coded list of albums 
   const album = [
@@ -95,8 +100,25 @@ function App() {
       prev.map((value, index) => (index === boxNum ? 'correct' : value)))
   }
 
+  async function spotifyLogin() {
+    console.log('REDIRECT_URI:', REDIRECT_URI)
+    const params = new URLSearchParams( {
+      client_id: CLIENTID,
+      response_type: 'code',
+      redirect_uri: REDIRECT_URI,
+      scope: 'user-library-read',
+      show_dialog: "true",
+    })
+
+    window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`
+  }
+
   //Switches the album to a new one
   const newAlbum = () => {
+    const code = new URLSearchParams(window.location.search).get("code")
+    if (code) {
+      console.log("Spotify code:", code)
+    }
     //Picks a new number that isnt already used 
     if (usedRef.current.length >= album.length) {
       toast.success("YOU WIN!")
@@ -169,6 +191,13 @@ function App() {
   return (
     <div> 
 
+      <div>
+        <button
+          onClick={spotifyLogin}> 
+            Spotify Login
+        </button>
+      </div>
+
       {showVignette && (<div //Used for applying the vignette overlay 
         className="screen-overlay"
         style = {{background: `radial-gradient(ellipse 60% 60% at 50% 31%, transparent ${vignetteSize}%, rgba(0, 0, 0, ${vignetteOpacity}) 100%)`}}
@@ -224,7 +253,6 @@ function App() {
             Next Album
         </button>
       </div>
-
 
     </div>
   )
