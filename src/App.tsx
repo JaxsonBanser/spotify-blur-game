@@ -246,6 +246,7 @@ function App() {
           alt="Album Cover"
           className="album-cover"
           style={{ filter: `blur(${blur}px)` }}
+          draggable='false'
         />  
         )}
       </div>
