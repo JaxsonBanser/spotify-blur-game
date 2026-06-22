@@ -35,9 +35,9 @@ function App() {
   const[blur, setBlur] = useState(70)
   const[showVignette, setShowVignette] = useState(false)
 
-  const revealProgress = 20 - blur*2
-  const vignetteSize = 70 - (revealProgress) / 2
-  const vignetteOpacity = .5 + (revealProgress) / 100
+  //const revealProgress = 20 - blur*2
+  //const vignetteSize = 70 - (revealProgress) / 2
+  //const vignetteOpacity = .5 + (revealProgress) / 100
 
   //Hard coded list of albums 
   const topAlbumsOAT= [
@@ -228,7 +228,7 @@ function App() {
 
       {showVignette && (<div //Used for applying the vignette overlay 
         className="screen-overlay"
-        style = {{background: `radial-gradient(ellipse 60% 60% at 50% 31%, transparent ${vignetteSize}%, rgba(0, 0, 0, ${vignetteOpacity}) 100%)`}}
+        //style = {{background: `radial-gradient(ellipse 60% 60% at 50% 31%, transparent ${vignetteSize}%, rgba(0, 0, 0, ${vignetteOpacity}) 100%)`}}
         />
         )}
 
