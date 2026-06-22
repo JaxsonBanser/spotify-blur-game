@@ -98,6 +98,7 @@ function App() {
   { name: "The Black Album", artist: "Jay-Z", image: "/Album Covers/TheBlackAlbum.jpg" },
 
   { name: "Dummy", artist: "Portishead", image: "/Album Cover/Dummy.jpg"},
+  { name: "Master Of Puppets", artist: "Metallica", image: "/Album Cover/MasterOf.jpg"},
   ]
 
   const [albums, setAlbums] = useState<Album[]>(topAlbumsOAT)
