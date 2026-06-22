@@ -40,63 +40,67 @@ function App() {
   const vignetteSize = 70 - (revealProgress) / 2
   const vignetteOpacity = .5 + (revealProgress) / 100
 
-  const [albums, setAlbums] = useState<Album[]>([])
-
   //Hard coded list of albums 
   const topAlbumsOAT= [
-    {
-      name: 'Feedbacker',
-      artist: 'Boris',
-      image: '/Feedbacker.jpg'
-    },
+  { name: "Abbey Road", artist: "The Beatles", image: "/Album Covers/AbbeyRoad.jpg" },
+  { name: "The Dark Side of the Moon", artist: "Pink Floyd", image: "/Album Covers/DarkSide.jpg" },
+  { name: "Rumours", artist: "Fleetwood Mac", image: "/Album Covers/Rumours.jpg" },
+  { name: "Thriller", artist: "Michael Jackson", image: "/Album Covers/Thriller.jpg" },
+  { name: "Nevermind", artist: "Nirvana", image: "/Album Covers/Nevermind.jpg" },
+  { name: "OK Computer", artist: "Radiohead", image: "/Album Covers/OkComputer.jpg" },
+  { name: "To Pimp a Butterfly", artist: "Kendrick Lamar", image: "/Album Covers/ToPimp.jpg" },
+  { name: "Blonde", artist: "Frank Ocean", image: "/Album Covers/Blonde.jpg" },
+  { name: "Illmatic", artist: "Nas", image: "/Album Covers/Illmatic.jpg" },
+  { name: "The College Dropout", artist: "Kanye West", image: "/Album Covers/CollegeDropout.jpg" },
 
-    {
-      name: 'Nevermind',
-      artist: 'Nirvana',
-      image: '/Nevermind.jpg'
-    },
+  { name: "The Miseducation of Lauryn Hill", artist: "Lauryn Hill", image: "/Album Covers/Miseducation.jpg" },
+  { name: "good kid, m.A.A.d city", artist: "Kendrick Lamar", image: "/Album Covers/GoodKid.jpg" },
+  { name: "Back to Black", artist: "Amy Winehouse", image: "/Album Covers/BackToBlack.jpg" },
+  { name: "Purple Rain", artist: "Prince", image: "/Album Covers/PurpleRain.jpg" },
+  { name: "Kid A", artist: "Radiohead", image: "/Album Covers/KidA.jpg" },
+  { name: "Sgt. Pepper's Lonely Hearts Club Band", artist: "The Beatles", image: "/Album Covers/SgtPeppers.jpg" },
+  { name: "The Wall", artist: "Pink Floyd", image: "/Album Covers/TheWall.jpg" },
+  { name: "London Calling", artist: "The Clash", image: "/Album Covers/LondonCalling.jpg" },
+  { name: "The Velvet Underground & Nico", artist: "The Velvet Underground", image: "/Album Covers/VelvetUnderground.jpg" },
+  { name: "Pet Sounds", artist: "The Beach Boys", image: "/Album Covers/PetSounds.jpg" },
 
-    {
-      name: 'Ege Bamyasi',
-      artist: 'CAN',
-      image: '/EgeBamyasi.jpg'
-    },
-    {
-      name: 'To Pimp A Butterfly',
-      artist: 'Kendrick Lamar',
-      image: '/TPAB.jpg'
-    },
-    {
-      name: 'In Rainbows',
-      artist: 'Radiohead',
-      image: '/InRainbows.jpg'
-    },
-    {
-      name: "In the Court of the Crimson King",
-      artist: 'King Crimson',
-      image: '/InTheCourt.jpg'
-    },
-    {
-      name: 'The Dark Side of the Moon',
-      artist: 'Pink Floyd',
-      image: '/DarkSide.jpg'
-    },
-    {
-      name: 'Abbey Road',
-      artist: 'The Beatles',
-      image: '/AbbeyRoad.jpg'
-    },
-    {
-      name: 'OK Computer',
-      artist: 'Radiohead',
-      image: '/OkComputer.jpg'
-    },
-    {
-      name: 'Rumours',
-      artist: 'Fleetwood Mac',
-      image: '/Rumours.jpg'
-    }
+  { name: "My Beautiful Dark Twisted Fantasy", artist: "Kanye West", image: "/Album Covers/MBDTF.jpg" },
+  { name: "Graduation", artist: "Kanye West", image: "/Album Covers/Graduation.jpg" },
+  { name: "DAMN.", artist: "Kendrick Lamar", image: "/Album Covers/DAMN.jpg" },
+  { name: "IGOR", artist: "Tyler, The Creator", image: "/Album Covers/IGOR.jpg" },
+  { name: "Flower Boy", artist: "Tyler, The Creator", image: "/Album Covers/FlowerBoy.jpg" },
+  { name: "Channel Orange", artist: "Frank Ocean", image: "/Album Covers/ChannelOrange.jpg" },
+  { name: "1989", artist: "Taylor Swift", image: "/Album Covers/1989.jpg" },
+  { name: "Emotion", artist: "Carly Rae Jepsen", image: "/Album Covers/Emotion.jpg" },
+  { name: "Future Nostalgia", artist: "Dua Lipa", image: "/Album Covers/FutureNostalgia.jpg" },
+  { name: "Melodrama", artist: "Lorde", image: "/Album Covers/Melodrama.jpg" },
+
+  { name: "Currents", artist: "Tame Impala", image: "/Album Covers/Currents.jpg" },
+  { name: "In Rainbows", artist: "Radiohead", image: "/Album Covers/InRainbows.jpg" },
+  { name: "Is This It", artist: "The Strokes", image: "/Album Covers/IsThisIt.jpg" },
+  { name: "AM", artist: "Arctic Monkeys", image: "/Album Covers/AM.jpg" },
+  { name: "Funeral", artist: "Arcade Fire", image: "/Album Covers/Funeral.jpg" },
+  { name: "The Suburbs", artist: "Arcade Fire", image: "/Album Covers/TheSuburbs.jpg" },
+  { name: "The Queen Is Dead", artist: "The Smiths", image: "/Album Covers/TheQueenIsDead.jpg" },
+  { name: "Disintegration", artist: "The Cure", image: "/Album Covers/Disintegration.jpg" },
+  { name: "Loveless", artist: "My Bloody Valentine", image: "/Album Covers/Loveless.jpg" },
+  { name: "Grace", artist: "Jeff Buckley", image: "/Album Covers/Grace.jpg" },
+
+  { name: "Songs in the Key of Life", artist: "Stevie Wonder", image: "/Album Covers/SongsInTheKey.jpg" },
+  { name: "What's Going On", artist: "Marvin Gaye", image: "/Album Covers/WhatsGoingOn.jpg" },
+  { name: "Innervisions", artist: "Stevie Wonder", image: "/Album Covers/Innervisions.jpg" },
+  { name: "Blue", artist: "Joni Mitchell", image: "/Album Covers/Blue.jpg" },
+  { name: "A Love Supreme", artist: "John Coltrane", image: "/Album Covers/ALoveSupreme.jpg" },
+  { name: "Kind of Blue", artist: "Miles Davis", image: "/Album Covers/KindOfBlue.jpg" },
+  { name: "Discovery", artist: "Daft Punk", image: "/Album Covers/Discovery.jpg" },
+  { name: "Random Access Memories", artist: "Daft Punk", image: "/Album Covers/RAM.jpg" },
+  { name: "Rodeo", artist: "Travis Scott", image: "/Album Covers/Rodeo.jpg" },
+  { name: "The Black Album", artist: "Jay-Z", image: "/Album Covers/TheBlackAlbum.jpg" },
+
+  { name: "Dummy", artist: "Portishead", image: "/Album Cover/Dummy.jpg"},
   ]
+
+  const [albums, setAlbums] = useState<Album[]>(topAlbumsOAT)
 
   //Used for randomly picking through the list of albums
   const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * albums.length))
