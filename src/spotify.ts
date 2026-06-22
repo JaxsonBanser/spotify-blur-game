@@ -35,7 +35,11 @@ export async function spotifyLogin() {
         client_id: CLIENT_ID,
         response_type: 'code',
         redirect_uri: REDIRECT_URI,
-        scope: 'user-library-read',
+        scope: [
+            'user-library-read',
+            'user-top-read',
+            'playlist-read-private'
+        ].join(' '),
         code_challenge_method: 'S256',
         code_challenge: challenge,
     })
@@ -72,16 +76,20 @@ export async function exchangeCodeForToken(code: string) {
 }
 
 export async function getCurrentUser() {
-  const token = localStorage.getItem('spotify_access_token')
+    const token = localStorage.getItem('spotify_access_token')
 
-  const res = await fetch('https://api.spotify.com/v1/me', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
+    const res = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
 
-  const data = await res.json()
-  return data
+    if (!res.ok) {
+        const errorText = await res.text()
+        throw new Error(errorText)
+    }    
+
+    return await res.json()
 }
 
 export async function getSavedAlbums(): Promise<Album[]> {
@@ -100,8 +108,26 @@ export async function getSavedAlbums(): Promise<Album[]> {
     return data.items.map((item: any) => ({
         name: item.album.name,
         artist: item.album.artists.map((artist: any) => artist.name).join(', '),
-        image: item.album.images[0]?.url
+        image: item.album.images[0]?.url,
     }))
+}
 
-    return data
+export async function getTopSongs(): Promise<Album[]> {
+    const token = localStorage.getItem('spotify_access_token')
+
+    const res = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=50&time_range=medium_term',
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    const data = await res.json()
+
+    return data.items.map((track: any) => ({
+        name: track.album.name,
+        artist: track.album.artists.map((artist: any) => artist.name).join(', '),
+        image: track.album.images[0]?.url,
+    }))
 }

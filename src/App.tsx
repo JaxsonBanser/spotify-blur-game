@@ -6,6 +6,7 @@ import {
   exchangeCodeForToken, 
   getCurrentUser, 
   getSavedAlbums,
+  getTopSongs,
   type Album,
 } from './spotify'
 
@@ -42,7 +43,7 @@ function App() {
   const [albums, setAlbums] = useState<Album[]>([])
 
   //Hard coded list of albums 
-  const hardCodeAlbums = [
+  const topAlbumsOAT= [
     {
       name: 'Feedbacker',
       artist: 'Boris',
@@ -98,7 +99,7 @@ function App() {
   ]
 
   //Used for randomly picking through the list of albums
-  const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * hardCodeAlbums.length))
+  const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * albums.length))
 
   //Marks off a box with an X upon an incorrect guess 
   const boxFail = (boxNum: number) => {
@@ -125,7 +126,9 @@ function App() {
         await exchangeCodeForToken(code)
         await getCurrentUser()
 
-        const albums = await getSavedAlbums()
+        //const albums = await getSavedAlbums()
+        const albums = await getTopSongs()
+
         setAlbums(albums)
         setAlbumNum(Math.floor(Math.random() * albums.length))
         
@@ -212,7 +215,6 @@ function App() {
 
   return (
     <div> 
-
       <div>
         <button
           onClick={spotifyLogin}> 
