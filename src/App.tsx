@@ -4,8 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { 
   spotifyLogin, 
   exchangeCodeForToken, 
-  getCurrentUser, 
-  getSavedAlbums,
+  getCurrentUser,
   getTopSongs,
   type Album,
 } from './spotify'
