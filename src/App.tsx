@@ -1,7 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
-import { spotifyLogin, exchangeCodeForToken, getCurrentUser} from './spotify'
+import { 
+  spotifyLogin, 
+  exchangeCodeForToken, 
+  getCurrentUser, 
+  getSavedAlbums,
+  type Album,
+} from './spotify'
 
 import './App.css'
 
@@ -33,8 +39,10 @@ function App() {
   const vignetteSize = 70 - (revealProgress) / 2
   const vignetteOpacity = .5 + (revealProgress) / 100
 
+  const [albums, setAlbums] = useState<Album[]>([])
+
   //Hard coded list of albums 
-  const album = [
+  const hardCodeAlbums = [
     {
       name: 'Feedbacker',
       artist: 'Boris',
@@ -81,11 +89,16 @@ function App() {
       name: 'OK Computer',
       artist: 'Radiohead',
       image: '/OkComputer.jpg'
+    },
+    {
+      name: 'Rumours',
+      artist: 'Fleetwood Mac',
+      image: '/Rumours.jpg'
     }
   ]
 
   //Used for randomly picking through the list of albums
-  const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * album.length))
+  const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * hardCodeAlbums.length))
 
   //Marks off a box with an X upon an incorrect guess 
   const boxFail = (boxNum: number) => {
@@ -111,6 +124,13 @@ function App() {
       try {
         await exchangeCodeForToken(code)
         await getCurrentUser()
+
+        const albums = await getSavedAlbums()
+        setAlbums(albums)
+        setAlbumNum(Math.floor(Math.random() * albums.length))
+        
+        console.log(albums.length)
+
         window.history.replaceState({}, document.title, '/')
       } catch (error) {
         console.error('Spotify callback failed: ', error)
@@ -122,14 +142,14 @@ function App() {
   //Switches the album to a new one
   const newAlbum = () => {
     //Picks a new number that isnt already used 
-    if (usedRef.current.length >= album.length) {
+    if (usedRef.current.length >= albums.length) {
       toast.success("YOU WIN!")
       usedRef.current = []
     }
 
     let candidate: number
     do {
-      candidate = Math.floor(Math.random() * album.length)
+      candidate = Math.floor(Math.random() * albums.length)
     } while (usedRef.current.includes(candidate))
  
     usedRef.current.push(candidate)
@@ -153,8 +173,8 @@ function App() {
       return
     }
 
-    if (guess.trim().toLowerCase() === album[albumNum].name.toLowerCase()) { //If user guesses correctly, show a success message and end the game
-      toast.success('Correct! The album is "' + album[albumNum].name + '" by ' + album[albumNum].artist + '.')
+    if (guess.trim().toLowerCase() === albums[albumNum].name.toLowerCase()) { //If user guesses correctly, show a success message and end the game
+      toast.success('Correct! The album is "' + albums[albumNum].name + '" by ' + albums[albumNum].artist + '.')
 
       //Win blur conditions
       setBlur(0)
@@ -166,7 +186,7 @@ function App() {
       return
     } else { //If the guess is incorrect, handles game logic
       if (attempts === 5) { //If the user has run out of attempts, show a game over message and end the game
-        toast.error('You have run out of attempts. The album was "' + album[albumNum].name + '" by ' + album[albumNum].artist + '.')
+        toast.error('You have run out of attempts. The album was "' + albums[albumNum].name + '" by ' + albums[albumNum].artist + '.')
 
         //Loss blur conditions
         setBlur(-100)
@@ -214,12 +234,14 @@ function App() {
        />
 
       <div className="album-container">
+        {albums.length > 0 && (
         <img //Used for holding the album cover image and applies the blur effect 
-          src={album[albumNum].image}
+          src={albums[albumNum].image}
           alt="Album Cover"
           className="album-cover"
           style={{ filter: `blur(${blur}px)` }}
         />  
+        )}
       </div>
         
       {boxStates.map((state, index) => (

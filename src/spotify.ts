@@ -1,6 +1,12 @@
 const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID
 const REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI
 
+export type Album = {
+    name: string
+    artist: string
+    image: string
+}
+
 function randomString(length: number) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     return Array.from(crypto.getRandomValues(new Uint8Array(length)))
@@ -75,8 +81,27 @@ export async function getCurrentUser() {
   })
 
   const data = await res.json()
-
-  console.log('CURRENT USER:', data)
-
   return data
+}
+
+export async function getSavedAlbums(): Promise<Album[]> {
+    const token = localStorage.getItem('spotify_access_token')
+
+    const res = await fetch('https://api.spotify.com/v1/me/albums?limit=50', 
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    const data = await res.json()
+
+    return data.items.map((item: any) => ({
+        name: item.album.name,
+        artist: item.album.artists.map((artist: any) => artist.name).join(', '),
+        image: item.album.images[0]?.url
+    }))
+
+    return data
 }
