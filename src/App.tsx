@@ -23,13 +23,16 @@ function App() {
   //Used for game end control
   const[finish, setFinish] = useState(false)
 
-  //Used for counting attempts made and updating blur, guess boxes, and vignette based on that. UI Design components 
-  const BLURREDUCTION = 14
+  //Used for adjusting toast alert duration
   const ALERTFADEDURATION = 3000
 
+  //Used for tracking attempts
   const[attempts, setAttempts] = useState(0)
   const[boxStates, setBoxStates] = useState<('empty' | 'wrong' | 'correct')[]>(Array(6).fill('empty'))
+
+  //Used for adjusting blur
   const[blur, setBlur] = useState(70)
+  const BLURREDUCTION = 14
 
   //Album list used for testing
   // const testRepeatAlbums = [
@@ -99,7 +102,8 @@ function App() {
   ]
 
   //Used for keeping track of the index of used albums
-  const albumKey = (album: Album) => `${album.name.trim().toLowerCase()}-${album.artist.trim().toLowerCase()}`
+  const albumKey = (album: Album) => 
+    album.id ?? `${album.name.trim().toLowerCase()}-${album.artist.trim().toLowerCase()}`
 
   const getUniqueAlbums = (albumList: Album[]) => {
     const seen = new Set<string>()
@@ -163,7 +167,8 @@ function App() {
   const newAlbum = () => {
     if (usedRef.current.size >= albums.length) {
       toast.success("YOU RAN OUT OF ALBUMS!")
-      usedRef.current.clear()
+      return
+      //usedRef.current.clear()
     }
 
     let candidate: Album
@@ -209,7 +214,7 @@ function App() {
         toast.error('You have run out of attempts. The album was "' + albums[albumNum].name + '" by ' + albums[albumNum].artist + '.')
 
         //Loss blur conditions
-        setBlur(-100)
+        setBlur(0)
 
         //Loss box conditions
         boxFail(attempts)

@@ -2,6 +2,7 @@ const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID
 const REDIRECT_URI = `${window.location.origin}/callback`
 
 export type Album = {
+    id?: string
     name: string
     artist: string
     image: string
@@ -125,6 +126,7 @@ export async function getTopSongs(): Promise<Album[]> {
     const data = await res.json()
 
     return data.items.map((track: any) => ({
+        id: track.album.id,
         name: track.album.name,
         artist: track.album.artists.map((artist: any) => artist.name).join(', '),
         image: track.album.images[0]?.url,
