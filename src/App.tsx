@@ -16,9 +16,6 @@ function App() {
 
   //Used for hilighting the input text box
   const inputRef = useRef<HTMLInputElement>(null)
-  
-  //Used for keeping track of the index of used albums
-  const usedRef = useRef<Album[]>([])
 
   //Used to hold the user's guess 
   const[guess, setGuess] = useState('')
@@ -33,7 +30,6 @@ function App() {
   const[attempts, setAttempts] = useState(0)
   const[boxStates, setBoxStates] = useState<('empty' | 'wrong' | 'correct')[]>(Array(6).fill('empty'))
   const[blur, setBlur] = useState(70)
-  const[showVignette, setShowVignette] = useState(false)
 
   const testRepeatAlbums = [
     { name: "Thriller", artist: "Michael Jackson", image: "/Album Covers/Thriller.jpg" },
@@ -101,10 +97,25 @@ function App() {
   // { name: "Master Of Puppets", artist: "Metallica", image: "/Album Covers/MasterOf.jpg"},
   // ]
 
-  const [albums, setAlbums] = useState<Album[]>(testRepeatAlbums)
+  //Used for keeping track of the index of used albums
+  const albumKey = (album: Album) => `${album.name.trim().toLowerCase()}-${album.artist.trim().toLowerCase()}`
 
-  //Used for randomly picking through the list of albums
+  const getUniqueAlbums = (albumList: Album[]) => {
+    const seen = new Set<string>()
+
+    return albumList.filter((album) => {
+      const key = albumKey(album)
+
+      if (seen.has(key)) return false
+
+      seen.add(key)
+      return true
+    })
+  }
+
+  const[albums, setAlbums] = useState<Album[]>(() => getUniqueAlbums(testRepeatAlbums))
   const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * albums.length))
+  const usedRef = useRef<Set<string>>(new Set([albumKey(albums[albumNum])]))
 
   //Marks off a box with an X upon an incorrect guess 
   const boxFail = (boxNum: number) => {
@@ -132,10 +143,12 @@ function App() {
         await getCurrentUser()
 
         //const albums = await getSavedAlbums()
-        const albums = await getTopSongs()
+        const spotifyAlbums = getUniqueAlbums(await getTopSongs())
+        const firstAlbumNum = Math.floor(Math.random() * spotifyAlbums.length)
 
-        setAlbums(albums)
-        setAlbumNum(Math.floor(Math.random() * albums.length))
+        setAlbums(spotifyAlbums)
+        setAlbumNum(firstAlbumNum)
+        usedRef.current = new Set([albumKey(spotifyAlbums[firstAlbumNum])])
          
         window.history.replaceState({}, document.title, '/')
       } catch (error) {
@@ -147,31 +160,30 @@ function App() {
 
   //Switches the album to a new one
   const newAlbum = () => {
-    //Picks a new album that hasn't been used before
-    if (usedRef.current.length >= albums.length) {
+    if (usedRef.current.size >= albums.length) {
       toast.success("YOU WIN!")
-      usedRef.current = []
+      usedRef.current.clear()
     }
 
     let candidate: Album
     let randAlbumNum: number
+
     do {
       randAlbumNum = Math.floor(Math.random() * albums.length)
       candidate = albums[randAlbumNum]
-    } while (usedRef.current.some(album => album.name === candidate.name))
+    } while (usedRef.current.has(albumKey(candidate)))
 
-    usedRef.current.push(candidate)
+    usedRef.current.add(albumKey(candidate))
     setAlbumNum(randAlbumNum)
 
-    //Resets round ui values
     setAttempts(0)
     setFinish(false)
     setBlur(70)
     setBoxStates(Array(6).fill('empty'))
 
     setGuess('')
-    setTimeout(() => inputRef.current!.focus(), 0)
-  } 
+    setTimeout(() => inputRef.current?.focus(), 0)
+  }
 
   //Handles logic for inputted guesses
   const handleGuess = () => {
@@ -186,7 +198,6 @@ function App() {
 
       //Win blur conditions
       setBlur(0)
-      setShowVignette(false)
 
       //Win box conditions
       boxSucc(attempts)
@@ -212,7 +223,6 @@ function App() {
         setBlur(blur - BLURREDUCTION)
       }
     }
-    setShowVignette(true)
     setGuess('')
   }
 
@@ -224,11 +234,6 @@ function App() {
             Spotify Login
         </button>
       </div>
-
-      {showVignette && (<div //Used for applying the vignette overlay 
-        className="screen-overlay"
-        />
-        )}
 
       <h1>UNTITLED</h1>
 
