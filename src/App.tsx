@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
+import { Analytics } from "@vercel/analytics/next"
 
 import { 
   spotifyLogin, 
@@ -96,8 +97,8 @@ function App() {
   { name: "Rodeo", artist: "Travis Scott", image: "/Album Covers/Rodeo.jpg" },
   { name: "The Black Album", artist: "Jay-Z", image: "/Album Covers/TheBlackAlbum.jpg" },
 
-  { name: "Dummy", artist: "Portishead", image: "/Album Cover/Dummy.jpg"},
-  { name: "Master Of Puppets", artist: "Metallica", image: "/Album Cover/MasterOf.jpg"},
+  { name: "Dummy", artist: "Portishead", image: "/Album Covers/Dummy.jpg"},
+  { name: "Master Of Puppets", artist: "Metallica", image: "/Album Covers/MasterOf.jpg"},
   ]
 
   const [albums, setAlbums] = useState<Album[]>(topAlbumsOAT)
