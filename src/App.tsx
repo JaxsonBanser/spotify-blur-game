@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
-import { Analytics } from "@vercel/analytics/next"
 
 import { 
   spotifyLogin, 
@@ -19,7 +18,7 @@ function App() {
   const inputRef = useRef<HTMLInputElement>(null)
   
   //Used for keeping track of the index of used albums
-  const usedRef = useRef<number[]>([])
+  const usedRef = useRef<Album[]>([])
 
   //Used to hold the user's guess 
   const[guess, setGuess] = useState('')
@@ -36,9 +35,10 @@ function App() {
   const[blur, setBlur] = useState(70)
   const[showVignette, setShowVignette] = useState(false)
 
-  //const revealProgress = 20 - blur*2
-  //const vignetteSize = 70 - (revealProgress) / 2
-  //const vignetteOpacity = .5 + (revealProgress) / 100
+  const testRepeatAlbums = [
+    { name: "Thriller", artist: "Michael Jackson", image: "/Album Covers/Thriller.jpg" },
+    { name: "Nevermind", artist: "Nirvana", image: "/Album Covers/Nevermind.jpg" },
+  ]
 
   //Hard coded list of albums 
   const topAlbumsOAT= [
@@ -101,7 +101,7 @@ function App() {
   { name: "Master Of Puppets", artist: "Metallica", image: "/Album Covers/MasterOf.jpg"},
   ]
 
-  const [albums, setAlbums] = useState<Album[]>(topAlbumsOAT)
+  const [albums, setAlbums] = useState<Album[]>(testRepeatAlbums)
 
   //Used for randomly picking through the list of albums
   const[albumNum, setAlbumNum] = useState(()=>Math.floor(Math.random() * albums.length))
@@ -136,9 +136,7 @@ function App() {
 
         setAlbums(albums)
         setAlbumNum(Math.floor(Math.random() * albums.length))
-        
-        console.log(albums.length)
-
+         
         window.history.replaceState({}, document.title, '/')
       } catch (error) {
         console.error('Spotify callback failed: ', error)
@@ -149,19 +147,21 @@ function App() {
 
   //Switches the album to a new one
   const newAlbum = () => {
-    //Picks a new number that isnt already used 
+    //Picks a new album that hasn't been used before
     if (usedRef.current.length >= albums.length) {
       toast.success("YOU WIN!")
       usedRef.current = []
     }
 
-    let candidate: number
+    let candidate: Album
+    let randAlbumNum: number
     do {
-      candidate = Math.floor(Math.random() * albums.length)
-    } while (usedRef.current.includes(candidate))
- 
+      randAlbumNum = Math.floor(Math.random() * albums.length)
+      candidate = albums[randAlbumNum]
+    } while (usedRef.current.some(album => album.name === candidate.name))
+
     usedRef.current.push(candidate)
-    setAlbumNum(candidate)
+    setAlbumNum(randAlbumNum)
 
     //Resets round ui values
     setAttempts(0)
@@ -204,8 +204,6 @@ function App() {
         setAttempts(attempts + 1)
         setFinish(true)
       } else { //If the user still has attempts left, show an error message and reduce the blur
-        //toast.error('Incorrect guess. Try again!')
-
         //Attempt box conditions
         boxFail(attempts)
         setAttempts(attempts + 1)
@@ -229,7 +227,6 @@ function App() {
 
       {showVignette && (<div //Used for applying the vignette overlay 
         className="screen-overlay"
-        //style = {{background: `radial-gradient(ellipse 60% 60% at 50% 31%, transparent ${vignetteSize}%, rgba(0, 0, 0, ${vignetteOpacity}) 100%)`}}
         />
         )}
 
