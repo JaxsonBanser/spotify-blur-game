@@ -42,7 +42,7 @@ function App() {
 
   //Hard coded list of top albums 
   const topAlbumsOAT= [
-  { name: "Abbey Road", artist: "The Beatles", image: "/Assets/55RJTiPQU.jpg" },
+  { name: "Abbey Road", artist: "The Beatles", image: "/Assets/5RJTiPQU.jpg" },
   { name: "The Dark Side of the Moon", artist: "Pink Floyd", image: "/Assets/LdHaV0pD.jpg" },
   { name: "Rumours", artist: "Fleetwood Mac", image: "/Assets/8F0Q880Z.jpg" },
   { name: "Thriller", artist: "Michael Jackson", image: "/Assets/eKKs1s8m.jpg" },
@@ -256,6 +256,7 @@ function App() {
           className="album-cover"
           style={{ filter: `blur(${blur}px)` }}
           draggable='false'
+          onContextMenu={(e) => e.preventDefault()}
         />  
         )}
       </div>
